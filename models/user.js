@@ -10,21 +10,28 @@ var userSchema = new mongoose.Schema({
   password: { type: String, required: true }
 });
 
-
 // IT'S MIDDLEWARE!!
 userSchema.statics.isLoggedIn = function(req, res, next) {
+  var token = req.cookies.accessToken;
 
-  // get the token from the cookie
-  // verify the token
+  jwt.verify(token, JWT_SECRET, (err, payload) => {
+    if(err) return res.status(401).send({error: 'Must be authenticated.'});
 
-  // if the token is bad, respond with error code 401 (hang up)
-  // if the token is good, call next()
+    User
+      .findById(payload._id)
+      .select({password: false})
+      .exec((err, user) => {
+        if(err || !user) {
+          return res.clearCookie('accessToken').status(400).send(err || {error: 'User not found.'});
+        }
 
+        req.user = user;
+        next();
+      })
+  });
 };
 
-
 userSchema.statics.register = function(userObj, cb) {
-  // create a new user!
   this.create(userObj, cb);
 };
 

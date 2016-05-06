@@ -16,18 +16,22 @@ router.post('/register', (req, res) => {
   });
 });
 
-
-router.post('/authenticate', (req, res) => {
+router.post('/login', (req, res) => {
   User.authenticate(req.body, (err, token) => {
     if(err) return res.status(400).send(err);
 
     res.cookie('accessToken', token).send(token);
-
   });
 });
 
-// router.get('/profile', User.isLoggedIn, (req, res) => {
+router.delete('/logout', (req, res) => {
+  res.clearCookie('accessToken').send();
+});
 
-// })
+// /api/users/profile
+router.get('/profile', User.isLoggedIn, (req, res) => {
+  console.log('req.user:', req.user);
+  res.send(req.user);
+})
 
 module.exports = router;
