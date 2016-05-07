@@ -30,8 +30,7 @@ router.delete('/logout', (req, res) => {
 
 // /api/users/profile
 router.get('/profile', User.isLoggedIn, (req, res) => {
-  console.log('req.user:', req.user);
   res.send(req.user);
-})
+});
 
 module.exports = router;

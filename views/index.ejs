@@ -14,14 +14,20 @@
   <script src="/js/services.js"></script>
 
 </head>
-<body ng-app='authApp'>
+<body ng-app='authApp' ng-controller='mainCtrl'>
 
-  <div class="container">
-    
+  <div class="container">    
     <div class="row">
       <button class="btn btn-sm btn-default" ui-sref='home'>Home</button>
-      <button class="btn btn-sm btn-default" ui-sref='login'>Login</button>
-      <button class="btn btn-sm btn-default" ui-sref='register'>Register</button>
+      <span ng-hide='currentUser'>
+        <button class="btn btn-sm btn-default" ui-sref='login'>Login</button>
+        <button class="btn btn-sm btn-default" ui-sref='register'>Register</button>
+      </span>
+      <span ng-show='currentUser'>
+        <button class="btn btn-sm btn-default" ui-sref='profile'>Profile</button>
+        <button class="btn btn-sm btn-default" ng-click='logout()'>Logout</button>
+        <span>Hello {{currentUser.username}}!</span>
+      </span>
     </div>
 
     <ui-view></ui-view>
