@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose');
 var moment = require('moment');
+var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -32,12 +33,26 @@ userSchema.statics.isLoggedIn = function(req, res, next) {
 
         req.user = user;
         next();
-      })
+      });
   });
 };
 
 userSchema.statics.register = function(userObj, cb) {
-  this.create(userObj, cb);
+  User.findOne({username: userObj.username}, (err, dbUser) => {
+    if(err || dbUser) return cb(err || { error: 'Username not available.' })
+
+
+    bcrypt.hash(userObj.password, 12, (err, hash) => {
+      if(err) return cb(err);
+
+      var user = new User({
+        username: userObj.username,
+        password: hash
+      });
+
+      user.save(cb);
+    });
+  });
 };
 
 userSchema.statics.authenticate = function(userObj, cb) {
@@ -48,13 +63,13 @@ userSchema.statics.authenticate = function(userObj, cb) {
   this.findOne({username: userObj.username}, (err, dbUser) => {
     if(err || !dbUser) return cb(err || { error: 'Login failed. Username or password incorrect.' });
 
-    if(dbUser.password !== userObj.password) {
-      return cb({error: 'Login failed. Username or password incorrect.'});
-    }
+    bcrypt.compare(userObj.password, dbUser.password, (err, isGood) => {
+      if(err || !isGood) return cb(err || { error: 'Login failed. Username or password incorrect.' });
 
-    var token = dbUser.makeToken();
+      var token = dbUser.makeToken();
 
-    cb(null, token);
+      cb(null, token);
+    });
   });
 };
 
