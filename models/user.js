@@ -1,6 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
+var moment = require('moment');
 var jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -54,7 +55,10 @@ userSchema.statics.authenticate = function(userObj, cb) {
 };
 
 userSchema.methods.makeToken = function() {
-  var token = jwt.sign({ _id: this._id }, JWT_SECRET);
+  var token = jwt.sign({
+    _id: this._id,
+    exp: moment().add(1, 'day').unix() // in seconds
+  }, JWT_SECRET);
   return token;
 };
 
