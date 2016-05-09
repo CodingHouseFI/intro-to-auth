@@ -1,12 +1,16 @@
 'use strict';
 
-var app = angular.module('authApp', ['ui.router']);
+var app = angular.module('authApp', ['ui.router', 'satellizer']);
 
 app.run(function(Auth) {
   Auth.getProfile();
 });
 
-app.config(function($stateProvider, $urlRouterProvider) {
+app.config(function($stateProvider, $urlRouterProvider, $authProvider) {
+  $authProvider.github({
+    clientId: '1e7dddf5d9a122c09c6b'
+  });
+
   $stateProvider
     .state('home', { url: '/', templateUrl: '/html/home.html', controller: 'homeCtrl' })
     .state('register', {

@@ -29,10 +29,14 @@ app.controller('homeCtrl', function($scope) {
 
 
 
-app.controller('authFormCtrl', function($scope, $state, Auth) {
+app.controller('authFormCtrl', function($scope, $state, Auth, $auth) {
   console.log('authFormCtrl!');
 
   $scope.currentState = $state.current.name;
+
+  $scope.authenticate = provider => {
+    $auth.authenticate(provider);
+  };
 
   $scope.submitForm = () => {
     if($scope.currentState === 'register') {

@@ -12,8 +12,9 @@ if(!JWT_SECRET) {
 }
 
 var userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true }
+  username: { type: String, unique: true },
+  password: { type: String },
+  github: String  // github user id
 });
 
 // IT'S MIDDLEWARE!!
@@ -56,10 +57,6 @@ userSchema.statics.register = function(userObj, cb) {
 };
 
 userSchema.statics.authenticate = function(userObj, cb) {
-  // find the user by the username
-  // confirm the password
-
-  // if user is found, and password is good, create a token
   this.findOne({username: userObj.username}, (err, dbUser) => {
     if(err || !dbUser) return cb(err || { error: 'Login failed. Username or password incorrect.' });
 
