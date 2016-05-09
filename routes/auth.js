@@ -8,6 +8,23 @@ var User = require('../models/user');
 //  auth.js
 //  /auth  router
 
+router.post('/login', (req, res) => {
+  User.authenticate(req.body, (err, token) => {
+    if(err) return res.status(400).send(err);
+
+    res.send({ token: token });
+  });
+});
+
+router.post('/signup', (req, res) => {
+  User.register(req.body, (err, user) => {
+    if(err) return res.status(400).send(err);
+
+    var token = user.makeToken();
+    res.send({ token: token });
+  });
+});
+
 router.post('/github', (req, res) => {
   var accessTokenUrl = 'https://github.com/login/oauth/access_token';
   var userApiUrl = 'https://api.github.com/user';

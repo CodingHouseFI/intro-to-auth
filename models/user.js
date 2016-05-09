@@ -12,7 +12,7 @@ if(!JWT_SECRET) {
 }
 
 var userSchema = new mongoose.Schema({
-  username: { type: String, unique: true },
+  email: { type: String, unique: true },
   password: { type: String },
   github: String  // github user id
 });
@@ -39,15 +39,16 @@ userSchema.statics.isLoggedIn = function(req, res, next) {
 };
 
 userSchema.statics.register = function(userObj, cb) {
-  User.findOne({username: userObj.username}, (err, dbUser) => {
-    if(err || dbUser) return cb(err || { error: 'Username not available.' })
-
+  console.log('userObj:', userObj);
+  User.findOne({email: userObj.email}, (err, dbUser) => {
+    console.log(err, dbUser);
+    if(err || dbUser) return cb(err || { error: 'Email not available.' })
 
     bcrypt.hash(userObj.password, 12, (err, hash) => {
       if(err) return cb(err);
 
       var user = new User({
-        username: userObj.username,
+        email: userObj.email,
         password: hash
       });
 
@@ -57,11 +58,11 @@ userSchema.statics.register = function(userObj, cb) {
 };
 
 userSchema.statics.authenticate = function(userObj, cb) {
-  this.findOne({username: userObj.username}, (err, dbUser) => {
-    if(err || !dbUser) return cb(err || { error: 'Login failed. Username or password incorrect.' });
+  this.findOne({email: userObj.email}, (err, dbUser) => {
+    if(err || !dbUser) return cb(err || { error: 'Login failed. Email or password incorrect.' });
 
     bcrypt.compare(userObj.password, dbUser.password, (err, isGood) => {
-      if(err || !isGood) return cb(err || { error: 'Login failed. Username or password incorrect.' });
+      if(err || !isGood) return cb(err || { error: 'Login failed. Email or password incorrect.' });
 
       var token = dbUser.makeToken();
 

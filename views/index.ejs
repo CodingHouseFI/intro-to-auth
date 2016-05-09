@@ -17,14 +17,16 @@
 </head>
 <body ng-app='authApp' ng-controller='mainCtrl'>
 
+  Auth: {{ isAuthenticated() }}
+
   <div class="container">    
     <div class="row">
       <button class="btn btn-sm btn-default" ui-sref='home'>Home</button>
-      <span ng-hide='currentUser'>
+      <span ng-hide='isAuthenticated()'>
         <button class="btn btn-sm btn-default" ui-sref='login'>Login</button>
         <button class="btn btn-sm btn-default" ui-sref='register'>Register</button>
       </span>
-      <span ng-show='currentUser'>
+      <span ng-show='isAuthenticated()'>
         <button class="btn btn-sm btn-default" ui-sref='profile'>Profile</button>
         <button class="btn btn-sm btn-default" ng-click='logout()'>Logout</button>
         <span>Hello {{currentUser.username}}!</span>

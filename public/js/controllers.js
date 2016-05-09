@@ -6,20 +6,22 @@ app.controller('profileCtrl', function() {
   console.log('profileCtrl!');
 });
 
-app.controller('mainCtrl', function($scope, $state, Auth) {
+app.controller('mainCtrl', function($scope, $state, Auth, $auth) {
 
-  $scope.$watch(function() {
-    return Auth.currentUser;
-  }, function(newVal, oldVal) {
-    $scope.currentUser = newVal;
-  });
+  // $scope.$watch(function() {
+  //   return Auth.currentUser;
+  // }, function(newVal, oldVal) {
+  //   $scope.currentUser = newVal;
+  // });
 
   $scope.logout = () => {
-    Auth.logout()
-      .then(res => {
-        $state.go('home');
-      })
+    $auth.logout();
   }
+
+  $scope.isAuthenticated = () => {
+    return $auth.isAuthenticated();
+  }
+
 
 });
 
@@ -49,9 +51,9 @@ app.controller('authFormCtrl', function($scope, $state, Auth, $auth) {
         
         alert('Passwords must match.')
       } else {
-        Auth.register($scope.user)
+        $auth.signup($scope.user)
           .then(res => {
-            return Auth.login($scope.user);
+            return $auth.login($scope.user);
           })
           .then(res => {
             $state.go('home');
@@ -61,7 +63,7 @@ app.controller('authFormCtrl', function($scope, $state, Auth, $auth) {
           });
       }
     } else {
-      Auth.login($scope.user)
+      $auth.login($scope.user)
         .then(res => {
           $state.go('home');
         })
