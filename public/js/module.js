@@ -2,9 +2,9 @@
 
 var app = angular.module('authApp', ['ui.router', 'satellizer']);
 
-app.run(function(Auth) {
-  Auth.getProfile();
-});
+// app.run(function(Auth) {
+//   Auth.getProfile();
+// });
 
 app.config(function($stateProvider, $urlRouterProvider, $authProvider) {
   $authProvider.github({
@@ -26,16 +26,16 @@ app.config(function($stateProvider, $urlRouterProvider, $authProvider) {
     .state('profile', {
       url: '/profile',
       templateUrl: '/html/profile.html',
-      controller: 'profileCtrl',
-      resolve: {
-        profile: function(Auth, $q, $state) {
-          return Auth.getProfile()
-          .catch(() => {
-            $state.go('home');
-            return $q.reject();
-          });
-        }
-      }
+      controller: 'profileCtrl'
+      // resolve: {
+      //   profile: function(Auth, $q, $state) {
+      //     return Auth.getProfile()
+      //     .catch(() => {
+      //       $state.go('home');
+      //       return $q.reject();
+      //     });
+      //   }
+      // }
     })
 
   $urlRouterProvider.otherwise('/');

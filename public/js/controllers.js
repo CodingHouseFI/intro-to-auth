@@ -6,13 +6,7 @@ app.controller('profileCtrl', function() {
   console.log('profileCtrl!');
 });
 
-app.controller('mainCtrl', function($scope, $state, Auth, $auth) {
-
-  // $scope.$watch(function() {
-  //   return Auth.currentUser;
-  // }, function(newVal, oldVal) {
-  //   $scope.currentUser = newVal;
-  // });
+app.controller('mainCtrl', function($scope, $state, $auth) {
 
   $scope.logout = () => {
     $auth.logout();
@@ -22,7 +16,6 @@ app.controller('mainCtrl', function($scope, $state, Auth, $auth) {
     return $auth.isAuthenticated();
   }
 
-
 });
 
 app.controller('homeCtrl', function($scope) {
@@ -31,7 +24,7 @@ app.controller('homeCtrl', function($scope) {
 
 
 
-app.controller('authFormCtrl', function($scope, $state, Auth, $auth) {
+app.controller('authFormCtrl', function($scope, $state, $auth) {
   console.log('authFormCtrl!');
 
   $scope.currentState = $state.current.name;
@@ -64,6 +57,9 @@ app.controller('authFormCtrl', function($scope, $state, Auth, $auth) {
       }
     } else {
       $auth.login($scope.user)
+      // email / password from form
+      // post it to /auth/login
+
         .then(res => {
           $state.go('home');
         })
